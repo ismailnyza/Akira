@@ -1,6 +1,5 @@
 pending tasks 
 
-add authentication 0auth
 add swagger 
 add a script to populate with dummy data
 add exception handling
@@ -15,3 +14,8 @@ extend the task entity
 add boards where it can be local or cloud
 optimize saving not to write or read often
 middle out xDD
+add keycloack 
+add websockets
+
+write unit tests
+edit multiple

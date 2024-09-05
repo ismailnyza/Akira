@@ -2,7 +2,7 @@ package parrotsl.akira.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import parrotsl.akira.entitiy.Task;
+import parrotsl.akira.entity.Task;
 import parrotsl.akira.repository.TaskRepository;
 
 import java.util.List;
@@ -57,4 +57,12 @@ public class TaskService {
         return taskFromDatabase;
     }
 
+    public Optional<List<Task>> fuzzySearch(String searchPhrase) {
+//        how tf does a fuzzy search work
+
+    }
+
+    public Optional<List<Task>> search(Task task) {
+//        search by filter criteria
+    }
 }
