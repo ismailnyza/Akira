@@ -62,5 +62,6 @@ public class TaskController {
 //    export to json
 //    llm part to generate random todos
 //    locally trained
+// add pmd and checkstyles
 
 }
