@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -31,6 +32,7 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-core:6.5.2.Final'
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '7.0.0.Alpha2', ext: 'pom'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
 
 
 
