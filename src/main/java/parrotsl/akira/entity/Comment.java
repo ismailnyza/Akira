@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "Comments")
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private String commentText;
     private LocalDateTime commentedAt;

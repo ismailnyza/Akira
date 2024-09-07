@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import parrotsl.akira.DTO.Task.CreateTaskDTO;
 import parrotsl.akira.entity.Task;
 import parrotsl.akira.entity.User;
 import parrotsl.akira.entity.enums.Priority;
@@ -27,9 +28,9 @@ public class TaskController {
   }
 
   @PostMapping
-  public Optional<Task> createTask(@RequestBody Task task) {
-    logger.info("Received request to create task: {}", task);
-    Optional<Task> createdTask = taskService.createTask(task);
+  public Optional<Task> createTask(@RequestBody CreateTaskDTO createTaskDTO) {
+    logger.info("Received request to create task: {}", createTaskDTO);
+    Optional<Task> createdTask = taskService.createTask(createTaskDTO);
     logger.info("Task created successfully: {}", createdTask);
     return createdTask;
   }
@@ -43,9 +44,9 @@ public class TaskController {
   }
 
   @GetMapping("/{taskId}")
-  public Optional<Task> getTaskByID(@PathVariable Long taskId) {
+  public Task getTaskByID(@PathVariable Long taskId) {
     logger.info("Received request to get task with ID: {}", taskId);
-    Optional<Task> task = taskService.getTaskById(taskId);
+    Task task = taskService.getTaskById(taskId);
     logger.info("Task found: {}", task);
     return task;
   }
@@ -59,9 +60,9 @@ public class TaskController {
   }
 
   @PatchMapping("/{taskId}")
-  public Optional<Task> editTaskById(@PathVariable Long taskId, @RequestBody Task task) {
+  public Task editTaskById(@PathVariable Long taskId, @RequestBody CreateTaskDTO task) {
     logger.info("Received request to edit task with ID: {}", taskId);
-    Optional<Task> editedTask = taskService.editTask(taskId, task);
+    Task editedTask = taskService.editTask(taskId, task);
     logger.info("Task edited successfully: {}", editedTask);
     return editedTask;
   }
