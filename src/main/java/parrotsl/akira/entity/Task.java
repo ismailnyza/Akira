@@ -1,9 +1,11 @@
 package parrotsl.akira.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import parrotsl.akira.entity.enums.Status;
 import parrotsl.akira.entity.enums.Priority;
 import parrotsl.akira.entity.enums.TaskVisibility;
@@ -16,25 +18,30 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     public Long id;
+    @NotNull
     public String title;
     public Enum<Status> status;
     public Enum<Priority> priority;
     public LocalDateTime taskCreatedAt;
     public LocalDateTime lastUpdatedAt;
+    @OneToOne
+    @JoinColumn(name = "created_by_id")
     public User createdBy;
-//    visible based on user roles
     public Enum<TaskVisibility> taskVisibility;
+    @ManyToOne
     public User assignees;
-//    maintain this in the db too
+    @ElementCollection
     public ArrayList<String> tags;
-
-    public ArrayList<Comments> comments;
-    public ArrayList<Task> subtasks;
+    @ManyToOne
+    public Comment comments;
+    @ManyToOne
+    public Task subtasks;
     public String description;
+
+
 }

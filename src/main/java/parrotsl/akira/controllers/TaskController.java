@@ -1,8 +1,13 @@
 package parrotsl.akira.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import parrotsl.akira.entity.Task;
+import parrotsl.akira.entity.User;
+import parrotsl.akira.entity.enums.Priority;
+import parrotsl.akira.entity.enums.Status;
 import parrotsl.akira.service.TaskService;
 
 import java.util.List;
@@ -12,56 +17,68 @@ import java.util.Optional;
 @RequestMapping("api/task")
 public class TaskController {
 
-    private final TaskService taskService;
+  private static final Logger logger = LogManager.getLogger(TaskController.class);
 
-    @Autowired
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+  private final TaskService taskService;
 
-    @PostMapping
-    public Optional<Task> createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
-    }
+  @Autowired
+  public TaskController(TaskService taskService) {
+    this.taskService = taskService;
+  }
 
-    @GetMapping
-    public Optional<List<Task>> getAllTasks() {
-        return taskService.getAllTasks();
-    }
+  @PostMapping
+  public Optional<Task> createTask(@RequestBody Task task) {
+    logger.info("Received request to create task: {}", task);
+    Optional<Task> createdTask = taskService.createTask(task);
+    logger.info("Task created successfully: {}", createdTask);
+    return createdTask;
+  }
 
-    @GetMapping("/{taskId}") // Specify path with variable
-    public Optional<Task> getTaskByID(@PathVariable Long taskId) { // Use @PathVariable
-        return taskService.getTaskById(taskId);
-    }
+  @GetMapping
+  public Optional<List<Task>> getAllTasks() {
+    logger.info("Received request to get all tasks");
+    Optional<List<Task>> tasks = taskService.getAllTasks();
+    logger.info("Returning {} tasks", tasks.isPresent() ? tasks.get().size() : 0);
+    return tasks;
+  }
 
-    @DeleteMapping("/{taskId}") // Specify path with variable
-    public String deleteTaskByID(@PathVariable Long taskId) { // Use @PathVariable
-            return taskService.deleteTaskById(taskId);
-    }
+  @GetMapping("/{taskId}")
+  public Optional<Task> getTaskByID(@PathVariable Long taskId) {
+    logger.info("Received request to get task with ID: {}", taskId);
+    Optional<Task> task = taskService.getTaskById(taskId);
+    logger.info("Task found: {}", task);
+    return task;
+  }
 
-    @PatchMapping("/{taskId}") // Specify path with variable
-    public Optional<Task> editTaskById(@PathVariable Long taskId , @RequestBody Task task) { // Use @PathVariable
-        return taskService.editTask(taskId , task);
-    }
+  @DeleteMapping("/{taskId}")
+  public String deleteTaskByID(@PathVariable Long taskId) {
+    logger.info("Received request to delete task with ID: {}", taskId);
+    String response = taskService.deleteTaskById(taskId);
+    logger.info("Task deleted successfully with ID: {}", taskId);
+    return response;
+  }
 
-//    what type of reqeust is a post
-    @PatchMapping("/{searchPhrase}")
-    public Optional<List<Task>> fuzzySearch(@PathVariable String searchPhrase){
-        return taskService.fuzzySearch(searchPhrase);
-    }
+  @PatchMapping("/{taskId}")
+  public Optional<Task> editTaskById(@PathVariable Long taskId, @RequestBody Task task) {
+    logger.info("Received request to edit task with ID: {}", taskId);
+    Optional<Task> editedTask = taskService.editTask(taskId, task);
+    logger.info("Task edited successfully: {}", editedTask);
+    return editedTask;
+  }
 
-//    search by field
-    @PostMapping("/Search")
-    public Optional<List<Task>> specificSearch(@RequestBody Task task){
-        return taskService.search(task);
-    }
+  @GetMapping("/search")
+  public List<Task> searchTasks(
+      @RequestParam(required = false) String title,
+      @RequestParam(required = false) String description,
+      @RequestParam(required = false) User createdBy,
+      @RequestParam(required = false) User assignees,
+      @RequestParam(required = false) Status status,
+      @RequestParam(required = false) Priority priority) {
 
-//    pagination
-//    create multiple
-//    edit delete create multiple batch
-//    export to json
-//    llm part to generate random todos
-//    locally trained
-// add pmd and checkstyles
-
+    logger.info("Received request to search tasks with filters - title: {}, description: {}, createdBy: {}, assignees: {}, status: {}, priority: {}",
+        title, description, createdBy, assignees, status, priority);
+    List<Task> tasks = taskService.searchTasks(title, description, createdBy, assignees, status, priority);
+    logger.info("Search returned {} tasks", tasks.size());
+    return tasks;
+  }
 }

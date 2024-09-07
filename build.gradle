@@ -76,7 +76,26 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '7.0.0.Alpha2', ext: 'pom'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Log4j2
+
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+
+
+
+    // Exclude Logback (since Spring Boot uses it by default)
+    configurations {
+        configureEach {
+            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        }
+    }
+
+
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
