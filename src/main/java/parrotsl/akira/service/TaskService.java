@@ -1,7 +1,6 @@
 package parrotsl.akira.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -65,25 +64,41 @@ public class TaskService {
         .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
   }
 
-  public GetTaskWithChildrenDTO getTaskByIdWithChildren(Long taskId) {
+  public GetTaskWithChildrenDTO getDetailedTasksById(Long taskId) {
     Task mainTask = taskRepository.findById(taskId)
         .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
-//    find if childrenExists
 
-    Optional<List<Task>> subtasks = taskRepository.findAllByParentTaskId(taskId);
-//    write an object to return this shit
     GetTaskWithChildrenDTO response = new GetTaskWithChildrenDTO();
-    BeanUtils.copyProperties(mainTask , response);
+    BeanUtils.copyProperties(mainTask, response);
+    Optional<User> creator = userRepository.findById(mainTask.getCreatorUserId());
+//    todo this should make better sense
+//    List<User> assignees = userRepository.findAllById(mainTask.getAssigneeUserIds());
+    response.setCreator(creator);
+
+//    find if childrenExists
+    Optional<List<Task>> subtasks = taskRepository.findAllByParentTaskId(taskId);
+
     response.setSubtasks(subtasks);
+
+//    check for users now
 
     return response;
   }
 
   public String deleteTaskById(Long taskId) {
+    // Check if the task exists
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
+        .orElseThrow(() -> new NoTaskFoundException("Task doesn't exist"));
+
+    // Find and delete all subtasks with the parentId matching the taskId
+    Optional<List<Task>> subtasks = taskRepository.findAllByParentTaskId(taskId);
+    subtasks.ifPresent(
+        tasks -> tasks.forEach(subtask -> taskRepository.deleteById(subtask.getId())));
+
+    // Delete the parent task
     taskRepository.deleteById(taskId);
-    return ("Task: " + task.getId() + " Deleted Successfully");
+
+    return "Task with ID " + taskId + " and its subtasks deleted successfully.";
   }
 
   public Task editTask(Long taskId, CreateTaskDTO taskfromRequest) {

@@ -55,7 +55,7 @@ public class TaskController {
   @GetMapping("/withchildren/{taskId}")
   public GetTaskWithChildrenDTO getTaskWithChildrenByID(@PathVariable Long taskId) {
     logger.info("Received request to get task with ID: {}", taskId);
-    GetTaskWithChildrenDTO task = taskService.getTaskByIdWithChildren(taskId);
+    GetTaskWithChildrenDTO task = taskService.getDetailedTasksById(taskId);
     logger.info("Task found: {}", task);
     return task;
   }
