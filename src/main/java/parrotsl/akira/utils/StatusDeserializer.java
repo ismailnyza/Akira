@@ -14,7 +14,7 @@ public class StatusDeserializer extends StdDeserializer<Status> {
 
   @Override
   public Status deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-      throws IOException, JacksonException {
+      throws IOException {
     return null;
   }
 

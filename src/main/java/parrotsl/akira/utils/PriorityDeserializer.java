@@ -15,7 +15,7 @@ public class PriorityDeserializer extends StdDeserializer<Priority> {
 
   @Override
   public Priority deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-      throws IOException, JacksonException {
+      throws IOException {
     return null;
   }
 

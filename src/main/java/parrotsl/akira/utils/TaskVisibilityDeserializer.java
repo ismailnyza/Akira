@@ -14,7 +14,7 @@ public class TaskVisibilityDeserializer extends StdDeserializer<TaskVisibility> 
 
   @Override
   public TaskVisibility deserialize(final JsonParser  jsonParser, final DeserializationContext deserializationContext)
-      throws IOException, JacksonException {
+      throws IOException {
     return null;
   }
 
