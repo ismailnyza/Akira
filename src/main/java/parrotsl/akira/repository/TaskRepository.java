@@ -18,6 +18,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
   @Query("SELECT t FROM Task t WHERE t.parentId = :parentId")
   Optional<List<Task>> findAllByParentTaskId( Long parentId);
 
+//  get all tasks assigned To CurrentUser
+
   // Method to delete task by ID
   void deleteById(Long taskId);
 

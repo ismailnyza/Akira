@@ -31,16 +31,17 @@ public class TaskController {
   @PostMapping
   public Optional<Task> createTask(@RequestBody CreateTaskDTO createTaskDTO) {
     logger.info("Received request to create task: {}", createTaskDTO);
+//    find and send the user id here
     Optional<Task> createdTask = taskService.createTask(createTaskDTO);
     logger.info("Task created successfully: {}", createdTask);
     return createdTask;
   }
 
   @GetMapping
-  public Optional<List<Task>> getAllTasks() {
+  public List<Task> getAllTasks() {
     logger.info("Received request to get all tasks");
-    Optional<List<Task>> tasks = taskService.getAllTasks();
-    logger.info("Returning {} tasks", tasks.isPresent() ? tasks.get().size() : 0);
+    List<Task> tasks = taskService.getAllTasks();
+    logger.info("Returning {} tasks", tasks != null ? tasks.size() : 0);
     return tasks;
   }
 
@@ -50,6 +51,14 @@ public class TaskController {
     Task task = taskService.getTaskById(taskId);
     logger.info("Task found: {}", task);
     return task;
+  }
+
+  @GetMapping("/allMe")
+  public List<Task> getAllTasksAssignedToCurrentUser() {
+    logger.info("Received request to get all tasks");
+    List<Task> tasks = taskService.getAllTasksAssignedToCurrentUser();
+    logger.info("Returning {} tasks", tasks != null ? tasks.size() : 0);
+    return tasks;
   }
 
   @GetMapping("/withchildren/{taskId}")

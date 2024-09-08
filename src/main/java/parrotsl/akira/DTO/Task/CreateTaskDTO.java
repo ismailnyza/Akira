@@ -20,7 +20,6 @@ public class CreateTaskDTO {
   private Status status;
 
   private Set<String> tags;
-  private Long creatorUserId;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   private Priority priority;
@@ -28,7 +27,7 @@ public class CreateTaskDTO {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   private TaskVisibility taskVisibility;
 
-  private Set<Long> assigneeUserIds;
+  private ArrayList<Long> assigneeUserIds;
   private Comment comments;
   private ArrayList<Task> subtasks;
   private Task parentTask;

@@ -3,6 +3,7 @@ package parrotsl.akira.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,7 +55,7 @@ public class Task {
 
     @ElementCollection
     @Schema(description = "IDs of the users assigned to the task.")
-    private Set<Long> assigneeUserIds;
+    private List<Long> assigneeUserIds;
 
     @ElementCollection
     @Schema(description = "Tags associated with the task.", example = "[\"urgent\", \"backend\"]")

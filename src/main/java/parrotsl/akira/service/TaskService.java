@@ -1,6 +1,7 @@
 package parrotsl.akira.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -8,12 +9,16 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import parrotsl.akira.DTO.Task.CreateTaskDTO;
 import parrotsl.akira.DTO.Task.GetTaskWithChildrenDTO;
+import parrotsl.akira.DTO.User.GetUserDTO;
 import parrotsl.akira.customExceptions.IncorrectValuesProvidedException;
 import parrotsl.akira.customExceptions.NoTaskFoundException;
+import parrotsl.akira.customExceptions.NoUsersFoundException;
 import parrotsl.akira.entity.Task;
 import parrotsl.akira.entity.User;
 import parrotsl.akira.entity.enums.Priority;
@@ -38,62 +43,14 @@ public class TaskService {
     this.taskTagService = taskTagService;
   }
 
-  public Optional<Task> createTask(CreateTaskDTO createTaskDTO) {
-    Task taskFromRequest = new Task();
-    BeanUtils.copyProperties(createTaskDTO, taskFromRequest);
-    validateCreateTaskRequest(taskFromRequest);
-    populateTaskFields(taskFromRequest, createTaskDTO);
-    taskFromRequest = taskRepository.save(taskFromRequest);
-    if (createTaskDTO.getSubtasks() != null) {
-      for (Task subtask : createTaskDTO.getSubtasks()) {
-        populateTaskFields(subtask, createTaskDTO);
-        subtask.setParentId(taskFromRequest.getId());
-        Task savedSubtask = taskRepository.save(subtask); // Save the subtask
-      }
-    }
-    return Optional.of(taskFromRequest);
-  }
-
-  public Optional<List<Task>> getAllTasks() {
-    List<Task> allTasks = taskRepository.findAll();
-    return Optional.of(allTasks);
-  }
-
-  public Task getTaskById(Long taskId) {
-    return taskRepository.findById(taskId)
-        .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
-  }
-
-  public GetTaskWithChildrenDTO getDetailedTasksById(Long taskId) {
-    Task mainTask = taskRepository.findById(taskId)
-        .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
-
-    GetTaskWithChildrenDTO response = new GetTaskWithChildrenDTO();
-    BeanUtils.copyProperties(mainTask, response);
-    Optional<User> creator = userRepository.findById(mainTask.getCreatorUserId());
-//    todo this should make better sense
-//    List<User> assignees = userRepository.findAllById(mainTask.getAssigneeUserIds());
-    response.setCreator(creator);
-
-//    find if childrenExists
-    Optional<List<Task>> subtasks = taskRepository.findAllByParentTaskId(taskId);
-
-    response.setSubtasks(subtasks);
-
-//    check for users now
-
-    return response;
-  }
-
   public String deleteTaskById(Long taskId) {
-    // Check if the task exists
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new NoTaskFoundException("Task doesn't exist"));
 
     // Find and delete all subtasks with the parentId matching the taskId
-    Optional<List<Task>> subtasks = taskRepository.findAllByParentTaskId(taskId);
-    subtasks.ifPresent(
-        tasks -> tasks.forEach(subtask -> taskRepository.deleteById(subtask.getId())));
+    List<Task> subtasks = taskRepository.findAllByParentTaskId(taskId)
+        .orElse(Collections.emptyList());
+    subtasks.forEach(subtask -> taskRepository.deleteById(subtask.getId()));
 
     // Delete the parent task
     taskRepository.deleteById(taskId);
@@ -101,12 +58,11 @@ public class TaskService {
     return "Task with ID " + taskId + " and its subtasks deleted successfully.";
   }
 
-  public Task editTask(Long taskId, CreateTaskDTO taskfromRequest) {
+  public Task editTask(Long taskId, CreateTaskDTO taskFromRequest) {
     Task taskFromDatabase = taskRepository.findById(taskId)
         .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
-    populateTaskFields(taskFromDatabase, taskfromRequest);
-    taskRepository.save(taskFromDatabase);
-    return taskFromDatabase;
+    populateTaskFields(taskFromDatabase, taskFromRequest);
+    return taskRepository.save(taskFromDatabase);
   }
 
   public List<Task> searchTasks(String title, String description, User createdBy, User assignees,
@@ -144,67 +100,110 @@ public class TaskService {
     }
 
     if (taskFromRequest.getAssigneeUserIds() != null) {
-      Set<Long> validAssignees = new HashSet<>();
+      ArrayList<Long> validAssignees = new ArrayList<>();
       for (Long assignee : taskFromRequest.getAssigneeUserIds()) {
-        Optional<User> user = userRepository.findById(assignee);
-        if (user.isPresent()) {
-          validAssignees.add(assignee);
-        }
+        userRepository.findById(assignee).ifPresent(user -> validAssignees.add(assignee));
       }
       taskFromRequest.setAssigneeUserIds(validAssignees);
-    }
-  }
-
-  private void validateTask(Task task) {
-    if (task.getTitle() == null) {
-      throw new IncorrectValuesProvidedException("Please provide a title for the task");
-    }
-    if (task.getDescription() == null) {
-      throw new IncorrectValuesProvidedException("Please provide a description for the task");
-    }
-
-    if (task.getAssigneeUserIds() != null) {
-      Set<Long> validAssignees = new HashSet<>();
-      for (Long assignee : task.getAssigneeUserIds()) {
-        Optional<User> user = userRepository.findById(assignee);
-        if (user.isPresent()) {
-          validAssignees.add(assignee);
-        }
-      }
-      task.setAssigneeUserIds(validAssignees);
     }
   }
 
   private void populateTaskFields(Task task, CreateTaskDTO createTaskDTO) {
     task.setTitle(createTaskDTO.getTitle());
     task.setDescription(createTaskDTO.getDescription());
-    task.setPriority(
-        createTaskDTO.getPriority() != null ? (Priority) createTaskDTO.getPriority()
-            : Priority.LOW);
-    task.setCreatorUserId(
-        createTaskDTO.getCreatorUserId() != null ? createTaskDTO.getCreatorUserId() : 6969);
-    task.setAssigneeUserIds(
-        createTaskDTO.getAssigneeUserIds() != null ? createTaskDTO.getAssigneeUserIds()
-            : Collections.singleton(task.getCreatorUserId()));
-    task.setStatus(
-        createTaskDTO.getStatus() != null ? Status.valueOf(createTaskDTO.getStatus().toString())
-            : Status.TODO);
-    task.setTaskCreatedAt(LocalDateTime.now());
+    task.setPriority(Optional.ofNullable(createTaskDTO.getPriority()).orElse(Priority.LOW));
+    task.setStatus(createTaskDTO.getStatus() != null ? Status.valueOf(
+        String.valueOf(createTaskDTO.getStatus())) : Status.TODO);
     task.setTaskVisibility(createTaskDTO.getTaskVisibility() != null ? TaskVisibility.valueOf(
-        createTaskDTO.getTaskVisibility().toString()) : TaskVisibility.PUBLIC);
-
-    task.setParentId(
-        createTaskDTO.getParentTask() != null ? createTaskDTO.getParentTask().getId() : null);
-
+        String.valueOf(createTaskDTO.getTaskVisibility())) : TaskVisibility.PUBLIC);
     task.setAssigneeUserIds(
-        createTaskDTO.getAssigneeUserIds() != null ? createTaskDTO.getAssigneeUserIds()
-            : Collections.singleton(task.getCreatorUserId()));
+        createTaskDTO.getAssigneeUserIds()
+    );
+    task.setParentId(
+        Optional.ofNullable(createTaskDTO.getParentTask()).map(Task::getId).orElse(null));
     task.setLastUpdatedAt(LocalDateTime.now());
+
     // Add tags if provided
-    Set<String> taskTags = new HashSet<>();
-    if (createTaskDTO.getTags() != null) {
-      taskTags.addAll(createTaskDTO.getTags());
-    }
+    Set<String> taskTags = Optional.ofNullable(createTaskDTO.getTags()).map(HashSet::new)
+        .orElse(new HashSet<>());
     task.setTags(taskTags);
+  }
+
+  public Optional<Task> createTask(CreateTaskDTO createTaskDTO) {
+    String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal()).getUsername();
+    User creator = userRepository.findByUsername(username);
+
+    Task taskFromRequest = new Task();
+    taskFromRequest.setCreatorUserId(creator.getId());
+    BeanUtils.copyProperties(createTaskDTO, taskFromRequest);
+    validateCreateTaskRequest(taskFromRequest);
+    populateTaskFields(taskFromRequest, createTaskDTO);
+
+    taskFromRequest = taskRepository.save(taskFromRequest);
+
+    if (createTaskDTO.getSubtasks() != null) {
+      for (Task subtask : createTaskDTO.getSubtasks()) {
+        populateTaskFields(subtask, createTaskDTO);
+        subtask.setParentId(taskFromRequest.getId());
+        taskRepository.save(subtask);
+      }
+    }
+
+    return Optional.of(taskFromRequest);
+  }
+
+  public List<Task> getAllTasks() {
+    return taskRepository.findAll();
+  }
+
+  public Task getTaskById(Long taskId) {
+    return taskRepository.findById(taskId)
+        .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
+  }
+
+  public GetTaskWithChildrenDTO getDetailedTasksById(Long taskId) {
+    Task mainTask = taskRepository.findById(taskId)
+        .orElseThrow(() -> new NoTaskFoundException("Task Doesn't Exist"));
+
+    GetTaskWithChildrenDTO response = new GetTaskWithChildrenDTO();
+    BeanUtils.copyProperties(mainTask, response);
+
+    // Populate creator details
+    userRepository.findById(mainTask.getCreatorUserId()).ifPresentOrElse(creator -> {
+      GetUserDTO getUserDTO = new GetUserDTO();
+      BeanUtils.copyProperties(creator, getUserDTO);
+      response.setCreator(getUserDTO);
+    }, () -> {
+      throw new NoUsersFoundException("User with ID " + mainTask.getCreatorUserId() + " not found");
+    });
+
+    // Populate assignees
+    // Fetch assignees based on user IDs
+    List<Long> userIds = mainTask.getAssigneeUserIds();
+    Optional<List<User>> assigneesOptional = userRepository.findAllByIdIn(new ArrayList<>(userIds));
+
+// Prepare a list for DTOs
+    ArrayList<GetUserDTO> getTaskWithChildrenDTOList = new ArrayList<>();
+
+// Convert each User to GetTaskWithChildrenDTO and add to the DTO list
+    assigneesOptional.ifPresent(assignees -> {
+      for (User user : assignees) {
+        GetUserDTO dto = new GetUserDTO();
+        BeanUtils.copyProperties(user, dto); // Copy properties from User to DTO
+        getTaskWithChildrenDTOList.add(dto);
+      }
+
+      // Set the assignees in the response
+      response.setAssignees(getTaskWithChildrenDTOList);
+    });
+
+    return response;
+
+  }
+
+  public List<Task> getAllTasksAssignedToCurrentUser() {
+//    get tasks where assignee user id is current user
+
   }
 }
