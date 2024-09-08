@@ -27,5 +27,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
   @Modifying
   @Query("DELETE FROM Task t WHERE t.parentId = :parentId")
   void deleteAllByParentTaskId( Long parentId);
+
+  @Query("SELECT t FROM Task t WHERE :userId MEMBER OF t.assigneeUserIds")
+  List<Task> findTasksByAssigneeUserId(@Param("userId") Long userId);
 }
 

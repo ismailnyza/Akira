@@ -203,7 +203,14 @@ public class TaskService {
   }
 
   public List<Task> getAllTasksAssignedToCurrentUser() {
-//    get tasks where assignee user id is current user
+    // Get the current user's ID
+    UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    String username = userDetails.getUsername();
+    User currentUser = userRepository.findByUsername(username);
+    Long currentUserId = currentUser.getId();
+
+    // Query tasks where the current user is an assignee
+    return taskRepository.findTasksByAssigneeUserId(currentUserId);
 
   }
 }

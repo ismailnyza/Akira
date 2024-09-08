@@ -53,7 +53,7 @@ public class TaskController {
     return task;
   }
 
-  @GetMapping("/allMe")
+  @GetMapping("/allTasksAssignedToMe")
   public List<Task> getAllTasksAssignedToCurrentUser() {
     logger.info("Received request to get all tasks");
     List<Task> tasks = taskService.getAllTasksAssignedToCurrentUser();
