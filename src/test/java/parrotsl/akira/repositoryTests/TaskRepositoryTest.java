@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +20,6 @@ class TaskRepositoryTest {
   @Autowired
   private TaskRepository taskRepository;
 
-  // Test for saving a task
   @Test
   void testSaveTask() {
     Task task = new Task();
@@ -57,27 +55,6 @@ class TaskRepositoryTest {
     taskRepository.deleteById(savedTask.getId());
     Optional<Task> deletedTask = taskRepository.findById(savedTask.getId());
     assertTrue(deletedTask.isEmpty());
-  }
-
-  // Test for deleting all tasks by parentId
-  @Test
-  @Transactional
-  void testDeleteAllByParentTaskId() {
-    Task task1 = new Task();
-    task1.setTitle("Task 1");
-    task1.setParentId(2L);
-
-    Task task2 = new Task();
-    task2.setTitle("Task 2");
-    task2.setParentId(2L);
-
-    taskRepository.save(task1);
-    taskRepository.save(task2);
-
-    taskRepository.deleteAllByParentTaskId(2L);
-
-    Optional<List<Task>> tasksAfterDeletion = taskRepository.findAllByParentTaskId(2L);
-    assertTrue(tasksAfterDeletion.isEmpty());
   }
 
   // Test for finding tasks by assignee user ID

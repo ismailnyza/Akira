@@ -50,8 +50,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**")
                 .permitAll()  // Permit access to login and authentication
                 .requestMatchers("/v3/**").permitAll()  // Permit access to login and authentication
-                .requestMatchers("swagger-ui.html")
-                .permitAll()  // Permit access to login and authentication
+                .requestMatchers("/swagger-ui/**")
+                .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")  // Secure admin endpoints
                 .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")  // Secure user endpoints
                 .anyRequest().authenticated()

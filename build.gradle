@@ -47,13 +47,6 @@ spotbugs {
     toolVersion = '4.8.6'
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "your_project_key"
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "your_sonar_token"
-    }
-}
 
 
 repositories {
@@ -96,10 +89,6 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-
-
-
     // Exclude Logback (since Spring Boot uses it by default)
     configurations {
         configureEach {
@@ -107,9 +96,7 @@ dependencies {
         }
     }
 
-
 }
-
 
 tasks.named('test') {
     useJUnitPlatform()
