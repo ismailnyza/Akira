@@ -28,7 +28,6 @@ public class UserController {
     this.userService = userService;
   }
 
-
   //  create user
   @PostMapping("Create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserDTO createUserDTO) {
@@ -60,7 +59,7 @@ public class UserController {
   @DeleteMapping("/{userId}")
   public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
     userService.deleteUser(userId);
-    return new ResponseEntity<>("successfully Delete User with user Id " + userId , HttpStatus.OK);
+    return new ResponseEntity<>("successfully Delete User with user Id " + userId, HttpStatus.OK);
   }
 
 }

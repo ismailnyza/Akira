@@ -1,7 +1,6 @@
 package parrotsl.akira.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class UserService {
       throw new IncorrectValuesProvidedException("LastName must be at least 3 characters");
     }
 
-    if (createUserDTO.getDisplayName() == null || createUserDTO.getDisplayName().length() < 3) {
+    if (createUserDTO.getUsername() == null || createUserDTO.getUsername().length() < 3) {
       throw new IncorrectValuesProvidedException("DisplayName must be at least 3 characters");
     }
 
@@ -45,7 +44,7 @@ public class UserService {
       throw new IncorrectValuesProvidedException("Please provide a valid email address");
     }
 
-    if (createUserDTO.getDateOfBirth() == null || createUserDTO.getDateOfBirth()
+    if (createUserDTO.getDateofBirth() == null || createUserDTO.getDateofBirth()
         .isAfter(LocalDate.now())) {
       throw new IncorrectValuesProvidedException("Please provide a valid Date of Birth");
 
@@ -53,9 +52,9 @@ public class UserService {
     User user = new User();
     user.setFirstName(createUserDTO.getFirstName());
     user.setLastName(createUserDTO.getLastName());
-    user.setDisplayName(createUserDTO.getDisplayName());
+    user.setUsername(createUserDTO.getUsername());
     user.setEmail(createUserDTO.getEmail());
-    user.setDateOfBirth(createUserDTO.getDateOfBirth());
+    user.setDateOfBirth(createUserDTO.getDateofBirth());
     return userRepository.save(user);
   }
 
@@ -79,7 +78,7 @@ public class UserService {
         .orElseThrow(() -> new UserNotFoundException("User with ID" + userId + " not found"));
 //    check if any fields are there
     if (editUserDTO.getDisplayPicture() == null &&
-        editUserDTO.getDisplayName() == null &&
+        editUserDTO.getUsername() == null &&
         editUserDTO.getFirstName() == null &&
         editUserDTO.getLastName() == null &&
         editUserDTO.getEmail() == null) {
@@ -92,8 +91,8 @@ public class UserService {
     if (editUserDTO.getLastName() != null) {
       userFromDB.setLastName(editUserDTO.getLastName());
     }
-    if (editUserDTO.getDisplayName() != null) {
-      userFromDB.setDisplayName(editUserDTO.getDisplayName());
+    if (editUserDTO.getUsername() != null) {
+      userFromDB.setUsername(editUserDTO.getUsername());
     }
     if (editUserDTO.getEmail() != null) {
       userFromDB.setEmail(editUserDTO.getEmail());
@@ -112,4 +111,5 @@ public class UserService {
 
     userRepository.deleteById(userId);
   }
+
 }

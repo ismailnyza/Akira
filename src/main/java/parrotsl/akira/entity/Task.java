@@ -12,7 +12,6 @@ import parrotsl.akira.entity.enums.Priority;
 import parrotsl.akira.entity.enums.TaskVisibility;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
@@ -59,22 +58,15 @@ public class Task {
 
     @ElementCollection
     @Schema(description = "Tags associated with the task.", example = "[\"urgent\", \"backend\"]")
-    private Set<TaskTag> tags;
+    private Set<String> tags;
 
-    @ManyToOne
-    @Schema(description = "Comments associated with the task.")
-    private Comment comments;
-
-    @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "Subtasks related to this task.")
-    private ArrayList<Task> subtasks = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "parent_task_id")
-    @Schema(description = "The parent task to which this subtask belongs.")
-    private Task parentTask;
+    @Column(name = "parent_id")
+    private Long parentId;
 
     @Schema(description = "Detailed description of the task.", example = "This task involves writing documentation.")
     private String description;
+
+    //todo implement comment functionality
 
 }

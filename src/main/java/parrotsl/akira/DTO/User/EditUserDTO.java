@@ -7,7 +7,7 @@ public class EditUserDTO {
 
   private String firstName;
   private String lastName;
-  private String displayName;
+  private String username;
   private String email;
   private String displayPicture;
 }

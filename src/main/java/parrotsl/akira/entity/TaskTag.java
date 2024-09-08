@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "Tags")
+@Table(name = "TaskTag")
 public class TaskTag {
 
   @Id

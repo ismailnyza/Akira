@@ -22,12 +22,11 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
-    private String displayName;
-//    introduce a custom type
+    private String password;
+    private String username;
+    private String role;
     private String email;
     private String displayPicture;
     private LocalDate dateOfBirth;
-//    deprecated after keycloack
-//    private Enum<Role> userRole;
 //
 }

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import parrotsl.akira.DTO.Task.CreateTaskDTO;
+import parrotsl.akira.DTO.Task.GetTaskWithChildrenDTO;
 import parrotsl.akira.entity.Task;
 import parrotsl.akira.entity.User;
 import parrotsl.akira.entity.enums.Priority;
@@ -47,6 +48,14 @@ public class TaskController {
   public Task getTaskByID(@PathVariable Long taskId) {
     logger.info("Received request to get task with ID: {}", taskId);
     Task task = taskService.getTaskById(taskId);
+    logger.info("Task found: {}", task);
+    return task;
+  }
+
+  @GetMapping("/withchildren/{taskId}")
+  public GetTaskWithChildrenDTO getTaskWithChildrenByID(@PathVariable Long taskId) {
+    logger.info("Received request to get task with ID: {}", taskId);
+    GetTaskWithChildrenDTO task = taskService.getTaskByIdWithChildren(taskId);
     logger.info("Task found: {}", task);
     return task;
   }
