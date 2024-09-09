@@ -1,94 +1,99 @@
-Here's a **README.md** for your Akira task management application:
+Here's a README file for your Akira task management application:
 
-```md
+---
+
 # Akira - Task Management Application
 
-Akira is a lightweight task management application built using Spring Boot and Java. It allows users to create, manage, and track their tasks with various features like extended task views, task editing, and user-based task retrieval. The application also includes robust exception handling and code quality checks.
+**Akira** is a simple task management application built using Spring Boot and Java. It allows users to create, manage, and track tasks with features like task creation, editing, viewing, and extended task details. The application is lightweight and designed for efficiency and ease of use, with robust exception handling to ensure seamless performance.
 
 ## Features
 
-- **Create Task**: Create a new task with attributes like title, description, and due date.
-- **Get Task**: Retrieve a specific task by its ID.
-- **Get Task (Extended View)**: Retrieve detailed information about the task, including subtasks, tags, and associated metadata.
-- **Edit Task**: Edit a task's details such as title, description, and status.
-- **View My Tasks**: View tasks that the currently logged-in user has created.
-- **Exception Handling**: Proper handling of invalid inputs and errors with user-friendly responses.
-- **Code Quality Tools**: PMD and SpotBugs integration to ensure the code adheres to best practices.
+- **Create Task:** Add a new task with a title, description, and due date.
+- **View Tasks:** View all tasks created by the logged-in user.
+- **Get Task by ID:** Fetch a specific task using its unique ID.
+- **Edit Task:** Update the task's details such as title, description, due date, and status.
+- **Extended Task View:** Retrieve detailed information about a task, including associated metadata, sub-tasks, etc.
+- **Exception Handling:** Handles errors such as invalid task IDs or missing fields with proper error messages.
 
-## Technology Stack
+## Tech Stack
 
-- **Backend**: Spring Boot with Java
-- **Database**: H2 (or any relational database)
-- **API Documentation**: Swagger
-- **Build Tools**: Gradle or Maven
-- **Code Quality Tools**: PMD, SpotBugs
+- **Backend:** Spring Boot with Java
+- **Database:** H2 (in-memory, easily switchable to other relational databases)
+- **Build Tool:** Gradle or Maven
+- **API Documentation:** Swagger UI for interactive API exploration
+- **Code Quality:** PMD, SpotBugs for code analysis
 
 ## Prerequisites
 
-To get the Akira application running, ensure you have the following installed:
+To get started with Akira, you'll need the following:
 
-- Java 11+
-- Gradle or Maven
-- An IDE (optional) for code editing
-- Git for cloning the repository
+- **JDK 17** or higher
+- **Gradle** or **Maven** (for building the application)
+- **H2 Database** (optional, configured by default in-memory)
 
-## Getting Started
+## Installation and Setup
 
-### Clone the Repository
+1. **Clone the repository:**
 
-```bash
-git clone <repository-url>
-cd akira
-```
+   ```bash
+   git clone <repository-url>
+   cd akira
+   ```
 
-### Build the Application
+2. **Build the application:**
 
-Using Gradle:
+   If using **Gradle**:
+   ```bash
+   ./gradlew build
+   ```
 
-```bash
-./gradlew build
-```
+   If using **Maven**:
+   ```bash
+   mvn clean install
+   ```
 
-Using Maven:
+3. **Run the application:**
 
-```bash
-mvn clean install
-```
+   ```bash
+   ./gradlew bootRun
+   ```
 
-### Run the Application
+4. **Access the API:**
 
-```bash
-./gradlew bootRun
-```
-
-Alternatively, you can run it using the JAR file after building:
-
-```bash
-java -jar build/libs/akira-0.0.1-SNAPSHOT.jar
-```
-
-### Access the Application
-
-After starting the application, you can access the Swagger UI for API documentation and testing.
-
-- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+   Once the application is running, you can access the API via Swagger UI for easy testing:
+   ```
+   http://localhost:8080/swagger-ui.html
+   ```
 
 ## API Endpoints
 
-### Task Management
+| Endpoint                      | Method | Description               |
+| ------------------------------ | ------ | ------------------------- |
+| `/api/tasks`                   | POST   | Create a new task          |
+| `/api/tasks/{id}`              | GET    | Get task by ID             |
+| `/api/tasks/{id}/extended`     | GET    | Get extended task details  |
+| `/api/tasks/my-tasks`          | GET    | View tasks created by me   |
+| `/api/tasks/{id}`              | PUT    | Edit a task                |
 
-- **Create Task**: `POST /api/tasks`
-- **Get Task**: `GET /api/tasks/{id}`
-- **Get Task (Extended)**: `GET /api/tasks/{id}/extended`
-- **Edit Task**: `PUT /api/tasks/{id}`
-- **View My Tasks**: `GET /api/tasks/my-tasks`
+## Running Code Quality Checks
 
-### Error Handling
+**PMD:**
+Run the command below to check for potential issues in the code:
+```bash
+./gradlew pmdMain
+```
 
-Errors will return appropriate HTTP status codes along with descriptive error messages in JSON format.
+**SpotBugs:**
+Run the following command to identify bugs in the code:
+```bash
+./gradlew spotbugsMain
+```
 
-### Example Error Response
+## Exception Handling
 
+Akira handles all errors gracefully and provides clear messages in case of exceptions like invalid input, missing data, or unauthorized actions.
+
+Example Error Response:
 ```json
 {
   "error": "Task not found",
@@ -97,30 +102,22 @@ Errors will return appropriate HTTP status codes along with descriptive error me
 }
 ```
 
-## Code Quality Checks
+## Database
 
-Akira includes code quality checks using **PMD** and **SpotBugs**.
+The application is configured with an **H2 in-memory database** for testing and development. You can easily switch to other relational databases like **PostgreSQL** or **MySQL** by updating the `application.properties` file.
 
-### Running PMD
+## Contributing
 
-To check code quality with PMD:
-
-```bash
-./gradlew pmdMain
-```
-
-### Running SpotBugs
-
-To check for potential bugs with SpotBugs:
-
-```bash
-./gradlew spotbugsMain
-```
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Open a pull request
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more information.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-```
+---
 
-You can customize the repository URL and the license section according to your preferences. This README provides a comprehensive overview of the project, installation steps, and how to use the API. Let me know if you'd like to add or modify anything!
+Let me know if you'd like any additional details included!
