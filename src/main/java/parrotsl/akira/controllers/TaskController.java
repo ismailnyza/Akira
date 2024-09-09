@@ -28,7 +28,7 @@ public class TaskController {
     this.taskService = taskService;
   }
 
-  @PostMapping
+  @PostMapping()
   public Optional<Task> createTask(@RequestBody CreateTaskDTO createTaskDTO) {
     logger.info("Received request to create task: {}", createTaskDTO);
 //    find and send the user id here
@@ -37,7 +37,7 @@ public class TaskController {
     return createdTask;
   }
 
-  @GetMapping
+  @GetMapping("/getall")
   public List<Task> getAllTasks() {
     logger.info("Received request to get all tasks");
     List<Task> tasks = taskService.getAllTasks();
@@ -55,7 +55,7 @@ public class TaskController {
 
   @GetMapping("/allTasksAssignedToMe")
   public List<Task> getAllTasksAssignedToCurrentUser() {
-    logger.info("Received request to get all tasks");
+    logger.info("Received request to get all tasks assigned to current user");
     List<Task> tasks = taskService.getAllTasksAssignedToCurrentUser();
     logger.info("Returning {} tasks", tasks != null ? tasks.size() : 0);
     return tasks;

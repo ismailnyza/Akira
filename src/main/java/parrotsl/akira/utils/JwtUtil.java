@@ -20,8 +20,12 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-  // Generate a secure key of at least 256 bits
-  private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+  private static final String SECRET_KEY_STRING = "s8Xr6pN9tM5q7vW2zX4k9hT3bD8n2fF4";
+
+  private Key getSigningKey() {
+    return Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
+  }
+  Key SECRET_KEY = getSigningKey();
 
   private final UserRepository userRepository;
 
