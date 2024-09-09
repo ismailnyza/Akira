@@ -218,7 +218,7 @@ public class UserService {
     }
 
     final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-    final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+    final String jwt = jwtUtil.generateCompleteJwt(userDetails.getUsername());
 
     logger.info("Authentication successful for user: {}", authRequest.getUsername());
     return new AuthenticationResponse(jwt);

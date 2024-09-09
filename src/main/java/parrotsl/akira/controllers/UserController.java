@@ -28,7 +28,7 @@ public class UserController {
     this.userService = userService;
   }
 
-  //  create user
+  //  create user allowed for everyone
   @PostMapping("Create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserDTO createUserDTO) {
     User createdUser = userService.createUser(createUserDTO);

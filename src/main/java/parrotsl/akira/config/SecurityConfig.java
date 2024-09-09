@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,22 +46,19 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        .csrf().disable()  // Disable CSRF since you're using JWT and stateless sessions
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/auth/**")
-                .permitAll()  // Permit access to login and authentication
-                .requestMatchers("/v3/**").permitAll()  // Permit access to login and authentication
-                .requestMatchers("/swagger-ui/**")
-                .permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")  // Secure admin endpoints
-                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")  // Secure user endpoints
-                .anyRequest().authenticated()
+            .requestMatchers("/api/auth/**").permitAll() // Public path
+            .requestMatchers("/v3/**").permitAll()       // Public path
+            .requestMatchers("/swagger-ui/**").permitAll() // Swagger UI should be public
+            .requestMatchers("/admin/**").hasAuthority("ADMIN")  // Protected admin path
+            .requestMatchers("/api/User/Create").permitAll()  // Protected admin path
+            .requestMatchers("/api/User/**").hasAuthority("ROLE_ADMIN")  // Protected admin path
+            .anyRequest().authenticated() // All other requests require authentication
         )
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
-
 }
