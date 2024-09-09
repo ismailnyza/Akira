@@ -27,4 +27,8 @@ public class EditUserDTO {
 
   @Schema(description = "URL of the user's display picture", example = "https://example.com/profile.jpg")
   private String displayPicture;
+
+  @Schema(description = "Users Role")
+  private String role;
+
 }

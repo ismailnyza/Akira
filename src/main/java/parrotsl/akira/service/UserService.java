@@ -127,10 +127,11 @@ public class UserService {
 
     if (editUserDTO.getDisplayPicture() == null && editUserDTO.getUsername() == null &&
         editUserDTO.getFirstName() == null && editUserDTO.getLastName() == null &&
-        editUserDTO.getEmail() == null) {
+        editUserDTO.getEmail() == null && editUserDTO.getRole() == null) {
       logger.error("All fields cannot be null for user ID: {}", userId);
       throw new IncorrectValuesProvidedException("All fields cannot be null");
     }
+
 
     if (editUserDTO.getFirstName() != null) {
       userFromDB.setFirstName(editUserDTO.getFirstName());
@@ -146,6 +147,10 @@ public class UserService {
     }
     if (editUserDTO.getDisplayPicture() != null) {
       userFromDB.setDisplayPicture(editUserDTO.getDisplayPicture());
+    }
+
+    if (editUserDTO.getRole() != null) {
+      userFromDB.setRole(editUserDTO.getRole());
     }
 
     User updatedUser = userRepository.save(userFromDB);
