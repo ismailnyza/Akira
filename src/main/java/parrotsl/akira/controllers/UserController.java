@@ -29,7 +29,7 @@ public class UserController {
   }
 
   //  create user allowed for everyone
-  @PostMapping("/Create")
+  @PostMapping("/create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserDTO createUserDTO) {
     User createdUser = userService.createUser(createUserDTO);
     return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
@@ -50,7 +50,7 @@ public class UserController {
   }
 
   //  todo find based on filter criteria
-  @GetMapping("/getallUsers")
+  @GetMapping("/getallusers")
   public ResponseEntity<List<User>> getAllUsers() {
     List<User> users = userService.findAll();
     return new ResponseEntity<>(users, HttpStatus.FOUND);
