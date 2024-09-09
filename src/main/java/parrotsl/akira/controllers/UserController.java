@@ -18,7 +18,7 @@ import parrotsl.akira.entity.User;
 import parrotsl.akira.service.UserService;
 
 @Controller
-@RequestMapping("api/User")
+@RequestMapping("api/user")
 public class UserController {
 
   @Autowired
@@ -29,7 +29,7 @@ public class UserController {
   }
 
   //  create user allowed for everyone
-  @PostMapping("Create")
+  @PostMapping("/Create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserDTO createUserDTO) {
     User createdUser = userService.createUser(createUserDTO);
     return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
