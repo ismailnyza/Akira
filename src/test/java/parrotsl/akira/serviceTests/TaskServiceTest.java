@@ -37,7 +37,8 @@ class TaskServiceTest {
   // ST_001: Test for deleting a task successfully
   @Test
   void testDeleteTaskById_Success_ST_001() {
-    Task task = new Task();
+
+     Task task = new Task();
     task.setId(1L);
 
     when(taskRepository.findById(1L)).thenReturn(Optional.of(task));

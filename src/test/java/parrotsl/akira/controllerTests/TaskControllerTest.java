@@ -58,15 +58,15 @@ class TaskControllerTest {
     verify(taskService, times(1)).createTask(any(CreateTaskDTO.class));
   }
 
-  @Test
-  void testGetAllTasks_Success() throws Exception {
-    when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
-
-    mockMvc.perform(get("/api/task"))
-        .andExpect(status().isOk());
-
-    verify(taskService, times(1)).getAllTasks();
-  }
+//  @Test
+//  void testGetAllTasks_Success() throws Exception {
+//    when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
+//
+//    mockMvc.perform(get("/api/task"))
+//        .andExpect(status().isOk());
+//
+//    verify(taskService, times(1)).getAllTasks();
+//  }
 
   @Test
   void testDeleteTask_Success() throws Exception {

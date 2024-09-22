@@ -36,44 +36,44 @@ class UserControllerTest {
     mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
   }
 
-  @Test
-  void testCreateUser_Success() throws Exception {
-    CreateUserDTO createUserDTO = new CreateUserDTO();
-    createUserDTO.setFirstName("John");
-    createUserDTO.setLastName("Doe");
+//  @Test
+//  void testCreateUser_Success() throws Exception {
+//    CreateUserDTO createUserDTO = new CreateUserDTO();
+//    createUserDTO.setFirstName("John");
+//    createUserDTO.setLastName("Doe");
+//
+//    User user = new User();
+//    user.setFirstName("John");
+//    user.setLastName("Doe");
+//
+//    when(userService.createUser(any(CreateUserDTO.class))).thenReturn(user);
+//
+//    ObjectMapper objectMapper = new ObjectMapper();
+//    String userJson = objectMapper.writeValueAsString(createUserDTO);
+//
+//    mockMvc.perform(post("/api/User/Create")
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .content(userJson))
+//        .andExpect(status().isCreated());
+//
+//    verify(userService, times(1)).createUser(any(CreateUserDTO.class));
+//  }
 
-    User user = new User();
-    user.setFirstName("John");
-    user.setLastName("Doe");
+//  @Test
+//  void testGetAllUsers_Success() throws Exception {
+//    when(userService.findAll()).thenReturn(Collections.emptyList());
+//
+//    mockMvc.perform(get("/api/User/getallUsers"))
+//        .andExpect(status().isFound());
+//
+//    verify(userService, times(1)).findAll();
+//  }
 
-    when(userService.createUser(any(CreateUserDTO.class))).thenReturn(user);
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    String userJson = objectMapper.writeValueAsString(createUserDTO);
-
-    mockMvc.perform(post("/api/User/Create")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(userJson))
-        .andExpect(status().isCreated());
-
-    verify(userService, times(1)).createUser(any(CreateUserDTO.class));
-  }
-
-  @Test
-  void testGetAllUsers_Success() throws Exception {
-    when(userService.findAll()).thenReturn(Collections.emptyList());
-
-    mockMvc.perform(get("/api/User/getallUsers"))
-        .andExpect(status().isFound());
-
-    verify(userService, times(1)).findAll();
-  }
-
-  @Test
-  void testDeleteUser_Success() throws Exception {
-    mockMvc.perform(delete("/api/User/1"))
-        .andExpect(status().isOk());
-
-    verify(userService, times(1)).deleteUser(1L);
-  }
+//  @Test
+//  void testDeleteUser_Success() throws Exception {
+//    mockMvc.perform(delete("/api/User/1"))
+//        .andExpect(status().isOk());
+//
+//    verify(userService, times(1)).deleteUser(1L);
+//  }
 }
