@@ -47,16 +47,18 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((auth) -> auth
-            .requestMatchers("/api/auth/**").permitAll() // Public path
-            .requestMatchers("/v3/**").permitAll()       // Public path
-            .requestMatchers("/swagger-ui/**").permitAll() // Swagger UI should be public
-            .requestMatchers("/api/User/Create").permitAll()// Protected admin path
-            .anyRequest().authenticated() // All other requests require authentication
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/v3/api-docs/**").permitAll()
+            .requestMatchers("/swagger-ui/**").permitAll()
+            .requestMatchers("/api/User/Create").permitAll()
+            .anyRequest().authenticated()
         )
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
+
 }
